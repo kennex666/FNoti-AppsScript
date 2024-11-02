@@ -7,7 +7,7 @@ Notification board for students using Google Apps Script
 Duong Thai Bao - A student of Cohort 17, Industrial University of Ho Chi Minh city
 
 ## Purpose
-This project is a personal endeavor aimed at creating a ready-to-use notification system that enables users to store important information visually, especially useful for those working on a project.
+This project is a personal endeavor aimed at creating a ready-to-use notification system that enables users to store important information visually, especially useful for those working on a project. It utilizes Google Apps Script and basic HTML, eliminating the need for complex server setups.
 
 ## Requirements
 * Google Account

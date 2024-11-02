@@ -7,7 +7,7 @@ Bảng thông báo cho sinh viên sử dụng Google Apps Script
 Dương Thái Bảo - Là sinh viên Khoá 17, trường Đại Học Công nghiệp TP.HCM
 
 ## Mục đích
-Dự án này là một dự án cá nhân nhằm phục vụ cho mục đích tạo ra một hệ thống sử dụng ngay, giúp các bạn làm việc trong một dự án có thể lưu trữ các thông tin quan trọng một cách trực quan.
+Dự án này là một dự án cá nhân nhằm phục vụ cho mục đích tạo ra một hệ thống sử dụng ngay, giúp các bạn làm việc trong một dự án có thể lưu trữ các thông tin quan trọng một cách trực quan. Sử dụng Google Apps Script và HTML cơ bản, không yêu cầu thiết lập & máy chủ phức tạp.
 
 ## Yêu cầu
 * Tài khoản Google
