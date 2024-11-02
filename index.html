@@ -1,0 +1,284 @@
+<html>
+<head>
+    <title>Bảng thông tin | Dương Thái Bảo - IUH</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+<style>
+	@keyframes spin {
+		0% { transform: rotate(0deg); }
+		100% { transform: rotate(360deg); }
+	}
+	.animate-spin {
+		animation: spin 1s linear infinite;
+	}
+    .nav{
+        top: 0;
+        width: 100%;
+    }
+    body{
+        display: flex;
+        flex-direction: column;
+        min-height: 100dvh;
+    }
+
+    .main{
+        flex: 1;
+    }
+</style>
+<body class="bg-gray-100 font-sans">
+    <!-- Navbar -->
+    <div class="flex justify-between items-center bg-gray-700 text-white px-8 py-3 nav">
+        <div>
+            <a href="https://dtbao.io.vn" class="text-lg font-semibold hover:underline">
+                <img src="images/avt-40x40.jpg" alt="Profile picture of Bao Duong" class="rounded-full">
+            </a>
+        </div>
+        <div>
+            <h3 class="text-xl md:text-2xl font-bold">BẢNG THÔNG TIN DỰ ÁN</h3>
+        </div>
+        <div>
+        </div>
+    </div>
+
+    <div class="mt-8 markdown main" id="posts">
+
+        	<!-- Loading -->
+		<div id="loading" class="text-center p-4">
+			<svg class="animate-spin h-6 w-6 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+				<circle cx="12" cy="12" r="10" stroke-width="4" class="text-blue-500 opacity-25" />
+				<path d="M12 6v6m0 0v6m0-6h6m-6 0H6" stroke="currentColor" stroke-width="4" class="text-blue-500" />
+			<span>Đang tải nội dung, vui lòng chờ...</span>
+		</div>
+            <!-- 
+        <div class="max-w-xl mx-auto bg-white rounded-lg shadow p-4 mb-6">
+            <div class="text-sm font-semibold text-red-500">❗ IMPORTANT</div>
+            <div class="flex items-start space-x-4 p-4">
+                <a href="https://dtbao.io.vn?s=bangthongtin" target="_blank" ><img src="images/avt-40x40.jpg" alt="Profile picture of Bao Duong" class="rounded-full"></a>
+                <div>
+                    <div class="text-sm font-semibold text-blue-500 hover:underline"><a href="https://dtbao.io.vn?s=bangthongtin" target="_blank" >Bao Duong</a></div>
+                    <div class="text-xs text-gray-500">December 20, 2023 · <i class="fas fa-globe-americas"></i></div>
+                    <div class="text-sm mt-2">
+                        Nội dung tuần này:<br>
+                        Xin chào Hellooo<br>
+                        Allo
+                    </div>
+                </div>
+            </div><div class="flex justify-end">
+                <div class="text-xs text-gray-500">...</div>
+            </div> 
+        </div>
+        -->
+        
+    </div>
+
+    
+    <div class="text-center flex flex-row aligns-center justify-center mb-8 hidden" id="sec-offset">
+        <div class="text-gray-700 me-2">Trang</div>
+        <ol class="flex gap-2" id="page-offset">
+        </ol>
+    </div>
+
+    <!-- footer -->
+    <div class="bg-gray-700 text-white text-center py-4 footer">
+        <div>
+            <p class="text-sm">© <script>document.write(new Date().getFullYear())</script> Trang được thiết kế và xây dựng bởi Dương Thái Bảo - IUH<br>Mọi hành vi sao chép ý tưởng đều là vi phạm bản quyền.</p>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="js/drawdown.js"></script>
+  <script type="text/javascript">
+
+    // scroll
+    window.onscroll = function() {scrollFunction()};
+    function scrollFunction() {
+        if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
+            document.getElementsByClassName("nav")[0].style.position = "fixed";
+        } else {
+            document.getElementsByClassName("nav")[0].style.position = "unset";
+        }
+    }
+    
+    const OFFSET = 5;
+
+    //get parameter from url
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('id');
+    const currentPage = urlParams.get('page') ? urlParams.get('page') : 1;
+    
+    const API_URL = "<REPLACE_UR_URL_HERE>";
+    const offset = (currentPage - 1) * OFFSET;
+
+
+    function applyMarkdownStyles(styles, parentElement) {
+        for (const [selector, classList] of Object.entries(styles)) {
+            if (typeof selector === 'string' && Array.isArray(classList)) {
+                // Chỉ áp dụng class cho các phần tử con trong parentElement
+                parentElement.querySelectorAll(selector).forEach(el => el.classList.add(...classList));
+            } else {
+                console.warn(`Invalid selector or classList for: ${selector}`);
+            }
+        }
+        return parentElement.outerHTML;
+    }
+
+
+    // Định nghĩa các style cho các phần tử Markdown
+    const markdownStyles = {
+        'h1': ['text-3xl', 'font-bold', 'text-blue-600', 'mt-6', 'mb-4'],
+        'h2': ['text-2xl', 'font-semibold', 'text-blue-500', 'mt-5', 'mb-3'],
+        'h3': ['text-xl', 'font-medium', 'text-blue-400', 'mt-4', 'mb-2'],
+        'p': ['text-base', 'text-gray-700', 'mt-2', 'mb-4', 'leading-relaxed'],
+        'ul': ['list-disc', 'list-inside', 'pl-5', 'mt-2', 'mb-4'],
+        'ol': ['list-decimal', 'list-inside', 'pl-5', 'mt-2', 'mb-4'],
+        'li': ['text-gray-700', 'mb-2'],
+        'a': ['text-blue-500', 'hover:underline'],
+        'code': ['bg-gray-100', 'text-red-500', 'font-mono', 'px-1', 'py-0.5', 'rounded'],
+        'pre': ['bg-gray-900', 'text-white', 'p-4', 'rounded-md', 'overflow-x-auto', 'my-4'],
+        'blockquote': ['border-l-4', 'border-blue-300', 'pl-4', 'italic', 'text-gray-600', 'my-4']
+    };
+
+
+    function createTag(tag, isPinned){
+        var tagTrans = "🔔 KHÔNG XÁC ĐỊNH";
+        var classTag = "text-sm font-semibold text-yellow-500";
+        switch (tag){
+            case "IMPORTANT":
+                tagTrans = "❗ QUAN TRỌNG";
+                classTag = "text-sm font-semibold text-red-500";
+                break;
+            case "INFO":
+                tagTrans = "ℹ️ THÔNG TIN";
+                classTag = "text-sm font-semibold text-blue-500";
+                break;
+            case "UPDATE":
+                tagTrans = "🔔 CẬP NHẬT";
+                classTag = "text-sm font-semibold text-yellow-500";
+                break;
+            case "REQUIRE_ACTION":
+                tagTrans = "❗ YÊU CẦU THỰC HIỆN";
+                classTag = "text-sm font-semibold text-red-500";
+                break;
+            case "ERROR":
+                tagTrans = "❗ LỖI";
+                classTag = "text-sm font-semibold text-red-500";
+                break;
+            default:
+                tagTrans = "🔔 KHÔNG XÁC ĐỊNH";
+                classTag = "text-sm font-semibold text-yellow-500";
+                break;
+        }
+        if (isPinned){
+            return `<div class='text-sm font-semibold text-red-500'>📌 ĐƯỢC GHIM (TAG_${tag})</div>`;
+        }
+        
+        return `<div class='${classTag}'>${tagTrans}</div>`;
+    }
+
+    function createName(name){
+        return "<a href=\"https://dtbao.io.vn?s=bangthongtin\" target=\"_blank\" class='text-sm font-semibold text-blue-500 hover:underline'>" + name + "</a>";
+    }
+
+    function createAvatar(avatar){
+        return "<a href='" + avatar + "' target='_blank'><img src='images/avt-40x40.jpg' alt='Profile picture of Bao Duong' class='rounded-full'></a>";
+    }
+
+    function createDate(date){
+        return "<div class='text-xs text-gray-500'>" + date + " · <i class='fas fa-globe-americas'></i></div>";
+    }
+
+    function createContent(content){
+        const div = document.createElement('div');
+        div.innerHTML =  markdown(content);
+
+        div.classList.add('mt-2');
+        return applyMarkdownStyles(markdownStyles, div);
+    }
+
+    function createPostElement(tag, name, avatar, date, content, isPinned){
+        return createTag(tag, isPinned) + "<div class='flex items-start space-x-4 p-4'>" + createAvatar(avatar) + "<div>" + createName(name) + createDate(date) + createContent(content) + "</div></div>";
+    }
+
+    function createPost(tag, name, avatar, date, content, isPinned){
+        var post = document.createElement("div");
+        post.className = "max-w-xl mx-auto bg-white rounded-lg shadow p-4 mb-6";
+        post.innerHTML = createPostElement(tag, name, avatar, date, content, isPinned);
+        return post;
+    }
+    
+    function createElementPageOffset(page){
+        var li = document.createElement("li");
+        li.className = "inline-block";
+        var a = document.createElement("a");
+       
+        // get current page
+        const urlParams = new URLSearchParams(window.location.search);
+
+        if (!currentPage || currentPage == page){
+            a.href = "#";
+        }else { 
+            // get current url & params, add page-offset
+            var url = new URL(window.location.href);
+            url.searchParams.set('page', page);
+            a.href = url.href;
+            console.log(url.href);
+        }
+        a.className = "text-blue-500 hover:underline";
+        a.innerHTML = page;
+        li.appendChild(a);
+        return li;
+    }
+
+    function getPosts(){
+        var posts = document.getElementById("posts");
+        fetch(`${API_URL}?id=${id}&offset=${offset}`)
+        .then(response => response.json()).then(result => {
+        
+            document.getElementById("sec-offset").classList.toggle("hidden", false);
+
+            //result.errorCode = 500;
+            //result.total = null;
+            const totalData = result.total ?? 1;
+
+            const totalPage = totalData % 10 == 0 ? totalData / 10 : Math.floor(totalData / 10) + 1;
+
+            var pageOffset = document.getElementById("page-offset");
+
+            for (var i = 1; i <= totalPage + 1; i++){
+                var li = createElementPageOffset(i);
+                pageOffset.appendChild(li);
+            }
+
+            if (result.errorCode != 200){
+                var post = createPost("ERROR", "Bao Duong", "https://dtbao.io.vn?s=bangthongtin", "Bây giờ", "Server trả lỗi: " + result.errorCode + " (" + result.message +"). Hãy thử lại lại trang nhé!", true);
+                posts.appendChild(post);
+                return;
+            }
+            const data = result.data;
+
+            if (data.length == 0){
+                var post = createPost("INFO", "Bao Duong", "https://dtbao.io.vn?s=bangthongtin", "Bây giờ", "Không có nội dung nào được đăng tải", true);
+                posts.appendChild(post);
+                return;
+            }
+            
+            for (var i = 0; i < data.length; i++){
+                var post = createPost(data[i].type, "Bao Duong", "https://dtbao.io.vn?s=bangthongtin", data[i].timestamp, data[i].notification, data[i].isPinned ?? false);
+                posts.appendChild(post);
+            }
+        }).catch(error => {
+            var post = createPost("ERROR", "Bao Duong", "https://dtbao.io.vn?s=bangthongtin", "Bây giờ", "Load nội dung thất bại, lỗi javascript hoặc mất mạng đột ngột.  Hãy thử lại lại trang nhé!");
+            posts.appendChild(post);
+            console.log(error);
+        }).finally(() => {
+            document.getElementById("loading").style.display = "none";
+        });
+    }
+
+    window.onload = ()=> {
+        getPosts();
+    };
+  </script>
+</html>
