@@ -19,10 +19,10 @@ Dự án này là một dự án cá nhân nhằm phục vụ cho mục đích t
 
 ### Google Forms
 1. Tạo một form bao gồm các thông tin:
-* `ID`: Dùng để định danh bảng thông báo cho nhóm nào (Short Answer)
-* `TYPE`: Loại thông báo dạng drop down hoặc radio tuỳ bạn, có 4 loại: INFO, IMPORTANT, UPDATE, REQUIRE_ACTION (viết in hoa)
-* `CONTENT`: Dùng để lưu trữ tin nhắn thông báo (Paragraph)
-* `IS_PINNED`: Radio gồm 2 giá trị: 0 và 1. Chọn 1 nếu cần ghim thông báo.
+ * `ID`: Dùng để định danh bảng thông báo cho nhóm nào (Short Answer)
+ * `TYPE`: Loại thông báo dạng drop down hoặc radio tuỳ bạn, có 4 loại: INFO, IMPORTANT, UPDATE, REQUIRE_ACTION (viết in hoa)
+ * `CONTENT`: Dùng để lưu trữ tin nhắn thông báo (Paragraph)
+ * `IS_PINNED`: Radio gồm 2 giá trị: 0 và 1. Chọn 1 nếu cần ghim thông báo.
 2. Link với Sheets
 3. Mở Sheets lên và copy ID sheet lại 
 `https://docs.google.com/spreadsheets/d/xxx/edit` trong đó `xxx` là id của Sheet
