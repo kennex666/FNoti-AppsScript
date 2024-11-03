@@ -4,7 +4,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 </head>
 <style>
 	@keyframes spin {
@@ -28,6 +27,9 @@
         flex: 1;
     }
 </style>
+
+<div type="variable" name="version" value="1.1.9"></div>
+
 <body class="bg-gray-100 font-sans">
     <!-- Navbar -->
     <div class="flex justify-between items-center bg-gray-700 text-white px-8 py-3 nav">
@@ -37,9 +39,22 @@
             </a>
         </div>
         <div>
-            <h3 class="text-xl md:text-2xl font-bold">BẢNG THÔNG TIN DỰ ÁN</h3>
+            <h3 class="text-xl md:text-2xl font-bold">BẢNG THÔNG TIN (V<script>document.write(document.querySelector("div[type='variable'][name='version']").getAttribute("value"))</script>)</h3>
         </div>
         <div>
+        </div>
+    </div>
+
+    <!-- Input secret code-->
+     
+    <div class="mt-8 markdown main hidden" id="input-code">
+        <div class="max-w-xl mx-auto bg-white rounded-lg shadow p-4 mb-6">
+            <div class="font-semibold text-red-500">❗ Vui lòng nhập mã của dự án để tiếp tục:</div>
+            <form action="#" class="flex flex-col p-4 w-full">
+                <p for="code" class="text-sm font-semibold text-gray-700 mb-2 mt-4">Mã dự án:</p>
+                <input type="text" name="id" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Nhập mã dự án">
+                <button type="submit" class="bg-blue-500 text-white p-2 rounded-md mt-6 w-full">Xác nhận</button>
+            </form>
         </div>
     </div>
 
@@ -91,15 +106,6 @@
 <script type="text/javascript" src="js/drawdown.js"></script>
   <script type="text/javascript">
 
-    // scroll
-    window.onscroll = function() {scrollFunction()};
-    function scrollFunction() {
-        if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
-            document.getElementsByClassName("nav")[0].style.position = "fixed";
-        } else {
-            document.getElementsByClassName("nav")[0].style.position = "unset";
-        }
-    }
     
     const OFFSET = 5;
 
@@ -111,6 +117,17 @@
     const API_URL = "<REPLACE_UR_URL_HERE>";
     const offset = (currentPage - 1) * OFFSET;
 
+
+    // scroll
+    window.onscroll = function() {scrollFunction()};
+    function scrollFunction() {
+        if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
+            document.getElementsByClassName("nav")[0].style.position = "fixed";
+        } else {
+            document.getElementsByClassName("nav")[0].style.position = "unset";
+        }
+    }
+    
 
     function applyMarkdownStyles(styles, parentElement) {
         for (const [selector, classList] of Object.entries(styles)) {
@@ -259,7 +276,7 @@
             const data = result.data;
 
             if (data.length == 0){
-                var post = createPost("INFO", "Bao Duong", "https://dtbao.io.vn?s=bangthongtin", "Bây giờ", "Không có nội dung nào được đăng tải", true);
+                var post = createPost("INFO", "Bao Duong", "https://dtbao.io.vn?s=bangthongtin", "Bây giờ", "Không có nội dung nào được đăng tải hoặc dự án này không tồn tại!\n\nMã dự án: `"+ id +"`", true);
                 posts.appendChild(post);
                 return;
             }
@@ -269,7 +286,7 @@
                 posts.appendChild(post);
             }
         }).catch(error => {
-            var post = createPost("ERROR", "Bao Duong", "https://dtbao.io.vn?s=bangthongtin", "Bây giờ", "Load nội dung thất bại, lỗi javascript hoặc mất mạng đột ngột.  Hãy thử lại lại trang nhé!");
+            var post = createPost("ERROR", "Bao Duong", "https://dtbao.io.vn?s=bangthongtin", "Bây giờ", "Load nội dung thất bại, hãy [reload lại trang]("+ window.location.href.replace("#", "") +"), nếu không được xin hãy mở bằng Chrome!\n\nCode dự án nếu cần: `" + id+"`", true);
             posts.appendChild(post);
             console.log(error);
         }).finally(() => {
@@ -278,7 +295,14 @@
     }
 
     window.onload = ()=> {
-        getPosts();
+        if (!id || id == "" || id.trim() == ""){
+            document.getElementById("input-code").classList.toggle("hidden", false);
+            document.getElementById("loading").style.display = "none";
+            return;
+        } else {
+            getPosts();
+        }
+        
     };
   </script>
 </html>
